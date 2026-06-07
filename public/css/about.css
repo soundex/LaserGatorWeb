@@ -1,0 +1,70 @@
+.story-timeline {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.story-timeline p {
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
+}
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.cert-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.cert-card .cert-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.cert-card h4 {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.team-card {
+  text-align: center;
+}
+
+.team-photo {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  margin: 0 auto 1.25rem;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-glow);
+  object-fit: cover;
+}
+
+.team-card .team-role {
+  color: var(--accent-magenta);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.testimonials-section .testimonial-block {
+  padding: 2rem;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}

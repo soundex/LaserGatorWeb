@@ -1,0 +1,7 @@
+node_modules/
+.env
+public/media/*
+!public/media/images/.gitkeep
+!public/media/videos/.gitkeep
+data/backups/
+data/contact-log.json

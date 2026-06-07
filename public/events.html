@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events — LaserGator</title>
+  <meta name="description" content="Upcoming LaserGator shows, festivals, and laser events. Get tickets and show details.">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/events.css">
+</head>
+<body data-page="events">
+  <div id="site-nav"></div>
+
+  <section class="page-hero">
+    <div class="container fade-in">
+      <h1>Upcoming <span class="accent-cyan">Events</span></h1>
+      <p>Find us at festivals, concerts, and special productions near you.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div id="events-empty" class="events-empty" style="display:none">
+        <h3>Check back soon</h3>
+        <p>We're always booking new shows. Contact us to bring LaserGator to your event.</p>
+        <a href="/contact.html#book" class="btn btn-primary" style="margin-top:1rem">Book a Show</a>
+      </div>
+
+      <div class="events-section">
+        <h2>Upcoming</h2>
+        <div class="events-grid" id="upcoming-events"></div>
+      </div>
+
+      <div class="events-section" id="past-events-section">
+        <button class="past-events-toggle" id="past-toggle">Show Past Events</button>
+        <div class="past-events-list" id="past-events-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="/js/main.js"></script>
+  <script src="/js/events.js"></script>
+</body>
+</html>

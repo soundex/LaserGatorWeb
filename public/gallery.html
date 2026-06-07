@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — LaserGator</title>
+  <meta name="description" content="Photos and videos from LaserGator live laser shows, festivals, and events.">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/gallery.css">
+</head>
+<body data-page="gallery">
+  <div id="site-nav"></div>
+
+  <section class="page-hero">
+    <div class="container fade-in">
+      <h1>Show <span class="accent-cyan">Gallery</span></h1>
+      <p>Photos and videos from our live productions.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="filter-bar" id="filter-bar"></div>
+      <div class="gallery-grid" id="gallery-grid"></div>
+      <div class="load-more-wrap">
+        <button class="btn btn-outline" id="load-more" style="display:none">Load More</button>
+      </div>
+      <p class="gallery-hint">New media added regularly — check back soon.</p>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer">
+    <button class="lightbox-close" aria-label="Close">&times;</button>
+    <div>
+      <div class="lightbox-content"></div>
+      <p class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+  <script src="/js/main.js"></script>
+  <script src="/js/gallery.js"></script>
+</body>
+</html>

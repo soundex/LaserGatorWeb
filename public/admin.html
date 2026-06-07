@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — LaserGator</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body data-page="admin">
+  <main class="admin-page">
+    <div class="container">
+      <div id="admin-login" class="admin-login">
+        <h1>Admin Login</h1>
+        <p>Upload media and manage events.</p>
+        <div class="card" style="margin-top:2rem">
+          <form id="login-form">
+            <div class="form-group">
+              <label for="admin-password">Password</label>
+              <input type="password" id="admin-password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
+            <p id="login-status" class="admin-status"></p>
+          </form>
+        </div>
+      </div>
+
+      <div id="admin-panel" class="admin-panel" style="display:none">
+        <div class="admin-header">
+          <h1>LaserGator Admin</h1>
+          <button id="logout-btn" class="btn btn-outline">Sign Out</button>
+        </div>
+
+        <div class="admin-tabs">
+          <button class="tab-btn active" data-tab="tab-upload">Upload Media</button>
+          <button class="tab-btn" data-tab="tab-library">Media Library</button>
+          <button class="tab-btn" data-tab="tab-events">Events</button>
+        </div>
+
+        <div id="tab-upload" class="tab-panel active">
+          <div class="upload-zone" id="upload-zone">
+            <p>Drag &amp; drop files here, or click to browse</p>
+            <p style="font-size:0.85rem;color:var(--text-muted)">.jpg, .png, .webp, .avif, .mp4, .webm</p>
+            <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm,image/avif">
+          </div>
+          <div class="upload-meta" id="upload-meta">
+            <p>Selected: <strong id="selected-file"></strong></p>
+            <form id="upload-form">
+              <div class="form-group">
+                <label for="upload-title">Title *</label>
+                <input type="text" id="upload-title" required>
+              </div>
+              <div class="form-group">
+                <label for="upload-category">Category</label>
+                <select id="upload-category">
+                  <option>Live Show</option>
+                  <option>Festival</option>
+                  <option>Corporate</option>
+                  <option>Behind the Scenes</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="upload-tag">Event Tag (optional)</label>
+                <input type="text" id="upload-tag" placeholder="e.g. Epic Queen">
+              </div>
+              <button type="submit" class="btn btn-primary">Upload</button>
+              <div class="progress-bar" id="upload-progress"><div class="progress-fill" id="progress-fill"></div></div>
+              <p id="upload-status" class="admin-status"></p>
+            </form>
+          </div>
+        </div>
+
+        <div id="tab-library" class="tab-panel">
+          <div class="media-library" id="media-library"></div>
+        </div>
+
+        <div id="tab-events" class="tab-panel">
+          <form id="event-form" class="event-form card">
+            <input type="hidden" id="event-id">
+            <div class="form-group">
+              <label for="event-title">Title *</label>
+              <input type="text" id="event-title" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="event-start">Date &amp; Time *</label>
+                <input type="datetime-local" id="event-start" required>
+              </div>
+              <div class="form-group">
+                <label for="event-status-select">Status</label>
+                <select id="event-status-select">
+                  <option value="upcoming">Upcoming</option>
+                  <option value="past">Past</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="event-venue">Venue</label>
+              <input type="text" id="event-venue">
+            </div>
+            <div class="form-group">
+              <label for="event-description">Description</label>
+              <textarea id="event-description"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="event-tickets">Ticket URL</label>
+              <input type="url" id="event-tickets" placeholder="https://">
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" id="event-featured"> Featured event</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Event</button>
+            <p id="event-status" class="admin-status"></p>
+          </form>
+          <h3 style="margin-top:2rem">Existing Events</h3>
+          <div class="media-library" id="events-list"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

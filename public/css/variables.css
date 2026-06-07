@@ -1,0 +1,22 @@
+:root {
+  --bg-deep: #050508;
+  --bg-surface: #10121a;
+  --bg-elevated: #181b26;
+  --text-primary: #f4f6fb;
+  --text-muted: #a8b0c3;
+  --accent-cyan: #00ffee;
+  --accent-magenta: #ff0080;
+  --accent-lime: #aaff00;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 255, 238, 0.35);
+  --shadow-glow: 0 0 30px rgba(0, 255, 238, 0.15);
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --nav-height: 72px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition: 0.25s ease;
+  --container: 1200px;
+  --section-pad: clamp(3rem, 6vw, 6rem);
+}

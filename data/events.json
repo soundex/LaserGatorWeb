@@ -1,0 +1,14 @@
+{
+  "events": [
+    {
+      "id": "evt_001",
+      "title": "LaserGator Festival 2026",
+      "startAt": "2026-08-15T19:00:00-07:00",
+      "venue": "TBD — Pacific Northwest",
+      "description": "The third annual LaserGator Festival. Full laser show with live bands.",
+      "ticketUrl": "",
+      "isFeatured": true,
+      "status": "upcoming"
+    }
+  ]
+}
