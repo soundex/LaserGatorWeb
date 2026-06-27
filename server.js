@@ -267,6 +267,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
+  logAuthMode();
   console.log(`LaserGator site running at http://localhost:${PORT}`);
 });
 
@@ -282,11 +283,36 @@ function ensureDirs() {
   }
 }
 
-async function verifyPassword(password) {
-  if (process.env.ADMIN_PASSWORD_HASH) {
-    return bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH);
+function getPasswordHash() {
+  return process.env.ADMIN_PASSWORD_HASH?.trim() || '';
+}
+
+function isProduction() {
+  return process.env.NODE_ENV === 'production';
+}
+
+function logAuthMode() {
+  const hash = getPasswordHash();
+  if (hash) {
+    console.log(`Admin auth: bcrypt hash (${hash.length} chars)`);
+    return;
   }
-  const devPassword = process.env.ADMIN_PASSWORD || 'changeme';
+  if (isProduction()) {
+    console.warn('WARNING: ADMIN_PASSWORD_HASH is not set — admin login is disabled.');
+    return;
+  }
+  console.log('Admin auth: development plaintext (ADMIN_PASSWORD or changeme)');
+}
+
+async function verifyPassword(password) {
+  const hash = getPasswordHash();
+  if (hash) {
+    return bcrypt.compare(password, hash);
+  }
+  if (isProduction()) {
+    return false;
+  }
+  const devPassword = process.env.ADMIN_PASSWORD?.trim() || 'changeme';
   return password === devPassword;
 }
 

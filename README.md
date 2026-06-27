@@ -15,13 +15,26 @@ Open [http://localhost:3000](http://localhost:3000).
 - **Admin panel:** [http://localhost:3000/admin](http://localhost:3000/admin)
 - **Default dev password:** `changeme` (set in `.env`)
 
-## Production password
+## Production password (Railway)
 
 ```bash
 npm run hash-password -- your-strong-password
 ```
 
-Add the output hash to `.env` as `ADMIN_PASSWORD_HASH` and remove `ADMIN_PASSWORD`.
+On Railway, set these variables:
+
+| Variable | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `ADMIN_PASSWORD_HASH` | Full 60-char bcrypt hash from the command above |
+| `TOKEN_SECRET` | Long random string |
+
+**Do not** set `ADMIN_PASSWORD` on Railway — remove it if Railway auto-added it.
+
+**Railway bcrypt tip:** Hashes contain `$` characters. Paste the entire hash as one value (e.g. `$2a$12$abcdef...`). If login still fails, wrap the value in double quotes in the Railway UI.
+
+After changing variables, redeploy and check deploy logs for:
+`Admin auth: bcrypt hash (60 chars)` — if you see `development plaintext` or the warning, the hash did not load.
 
 ## Project structure
 
