@@ -20,9 +20,11 @@
       const res = await fetch('/data/media-manifest.json');
       const data = await res.json();
       allItems = [
-        ...data.images.map((i) => ({ ...i, type: 'image' })),
-        ...data.videos.map((v) => ({ ...v, type: 'video' })),
-      ].sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+        ...(data.images || []).map((i) => ({ ...i, type: 'image' })),
+        ...(data.videos || []).map((v) => ({ ...v, type: 'video' })),
+      ]
+        .filter((item) => item.category !== 'Team / Staff')
+        .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
 
       buildFilters(data);
       applyFilter('all');
@@ -34,7 +36,7 @@
   function buildFilters(data) {
     if (!filters) return;
     const tags = new Set();
-    [...data.images, ...data.videos].forEach((item) => {
+    [...(data.images || []), ...(data.videos || [])].forEach((item) => {
       if (item.eventTag) tags.add(item.eventTag);
     });
 
@@ -86,6 +88,7 @@
     grid.querySelectorAll('.gallery-item').forEach((el) => {
       el.addEventListener('click', () => openLightbox(el.dataset));
     });
+    window.LaserGator?.revealFadeIns(grid);
 
     if (loadMoreBtn) {
       loadMoreBtn.style.display = visibleCount < filtered.length ? 'inline-flex' : 'none';
@@ -93,24 +96,28 @@
   }
 
   function renderItem(item, idx) {
-    const src = item.type === 'image'
-      ? `/media/images/${item.thumbnail || item.filename}`
-      : item.poster
-        ? `/media/images/${item.poster}`
-        : '';
+    let mediaTag;
+    if (item.type === 'image') {
+      const src = `/media/images/${item.thumbnail || item.filename}`;
+      mediaTag = `<img src="${src}" alt="${escapeHtml(item.title)}" loading="lazy">`;
+    } else if (item.poster) {
+      mediaTag = `<img src="/media/images/${item.poster}" alt="${escapeHtml(item.title)}" loading="lazy">`;
+    } else {
+      mediaTag = `
+        <div class="video-thumb">
+          <video src="/media/videos/${encodeURI(item.filename)}" muted playsinline preload="metadata" aria-label="${escapeHtml(item.title)}"></video>
+          <div class="video-badge"></div>
+        </div>`;
+    }
 
-    const imgTag = src
-      ? `<img src="${src}" alt="${escapeHtml(item.title)}" loading="lazy">`
-      : `<div style="width:100%;height:100%;background:var(--bg-elevated)"></div>`;
-
-    const videoBadge = item.type === 'video' ? '<div class="video-badge"></div>' : '';
+    const videoBadge = '';
 
     return `
-      <article class="gallery-item fade-in" style="transition-delay:${(idx % 12) * 50}ms"
+      <article class="gallery-item fade-in visible" style="transition-delay:${(idx % 12) * 50}ms"
         data-type="${item.type}"
         data-filename="${item.filename}"
         data-title="${escapeHtml(item.title)}">
-        ${imgTag}
+        ${mediaTag}
         ${videoBadge}
         <div class="item-overlay">
           <span class="item-type">${item.type}</span>
@@ -137,7 +144,7 @@
     if (dataset.type === 'image') {
       content.innerHTML = `<img src="/media/images/${dataset.filename}" alt="${dataset.title}">`;
     } else {
-      content.innerHTML = `<video src="/media/videos/${dataset.filename}" controls autoplay></video>`;
+      content.innerHTML = `<video src="/media/videos/${encodeURI(dataset.filename)}" controls autoplay playsinline></video>`;
     }
     caption.textContent = dataset.title;
 

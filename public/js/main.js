@@ -83,28 +83,40 @@
       </footer>`;
   }
 
-  function initFadeIn() {
-    const els = document.querySelectorAll('.fade-in');
-    if (!els.length) return;
+  let fadeInObserver;
 
-    const observer = new IntersectionObserver(
+  function getFadeInObserver() {
+    if (fadeInObserver) return fadeInObserver;
+
+    fadeInObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+            fadeInObserver.unobserve(entry.target);
           }
         });
       },
       { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
 
+    return fadeInObserver;
+  }
+
+  function revealFadeIns(root) {
+    const scope = root || document;
+    const els = scope.querySelectorAll('.fade-in:not(.visible)');
+    if (!els.length) return;
+
+    const observer = getFadeInObserver();
     els.forEach((el) => observer.observe(el));
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     renderNav();
     renderFooter();
-    initFadeIn();
+    revealFadeIns();
   });
+
+  window.LaserGator = { revealFadeIns };
 })();

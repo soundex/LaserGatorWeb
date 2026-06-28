@@ -1,6 +1,16 @@
 {
   "events": [
     {
+      "id": "evt_1782597860689",
+      "title": "Harefest 2026",
+      "startAt": "2026-07-16T17:00",
+      "venue": "Clackamas County Fairgrounds",
+      "description": "",
+      "ticketUrl": "",
+      "isFeatured": false,
+      "status": "upcoming"
+    },
+    {
       "id": "evt_001",
       "title": "LaserGator Festival 2026",
       "startAt": "2026-08-15T19:00:00-07:00",

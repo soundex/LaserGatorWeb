@@ -56,6 +56,18 @@
   object-fit: cover;
 }
 
+.video-thumb {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-elevated);
+}
+
+.video-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .gallery-item .item-overlay {
   position: absolute;
   inset: 0;

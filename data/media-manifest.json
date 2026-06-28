@@ -1,28 +1,46 @@
 {
-  "lastUpdated": "2026-06-07T02:23:49.606Z",
-  "images": [
+  "lastUpdated": "2026-06-27T22:24:54.363Z",
+  "images": [],
+  "videos": [
     {
-      "id": "img_1780799029559_d3a9535d",
-      "filename": "36bfa3bd-2bfc-414f-a955-902d8b3f8655-jpg-1780799029556.avif",
-      "title": "Milo Matthews",
-      "category": "Behind the Scenes",
+      "id": "vid_1782599094363_e90dc56d",
+      "filename": "aqpw33fvypjxdbdor5oixmxgqlxby5dfekagswvxjniqqq1p0hrhcjudvrw6-1782599094333.mp4",
+      "title": "Epic Queen",
+      "category": "Live Show",
       "eventTag": "",
-      "uploadedAt": "2026-06-07T02:23:49.559Z",
-      "thumbnail": "thumb_36bfa3bd-2bfc-414f-a955-902d8b3f8655-jpg-1780799029556.webp",
-      "width": 197,
-      "height": 197
+      "uploadedAt": "2026-06-27T22:24:54.363Z",
+      "poster": null,
+      "duration": null
     },
     {
-      "id": "img_1780799010699_5e4bc826",
-      "filename": "img-2595-png-1780799010679.avif",
-      "title": "Paul Mehner",
-      "category": "Behind the Scenes",
+      "id": "vid_1782598900348_c55e8ed4",
+      "filename": "aqoazvb4wv3usijrfdphthbh8m3qgtgmqezm1bkyqjzb8sgthvqje0fsevsr-1782598900293.mp4",
+      "title": "Nothing Shocking",
+      "category": "Live Show",
       "eventTag": "",
-      "uploadedAt": "2026-06-07T02:23:30.699Z",
-      "thumbnail": "thumb_img-2595-png-1780799010679.webp",
-      "width": 192,
-      "height": 197
+      "uploadedAt": "2026-06-27T22:21:40.348Z",
+      "poster": null,
+      "duration": null
+    },
+    {
+      "id": "vid_1782598799712_f3f69337",
+      "filename": "aqpqmsk4lisxwx0pmaytqfzekzpa0r4ob30bz-vchmxfulmvg7cxumrhx0o1-1782598799569.mp4",
+      "title": "Anthem Rush Tribute",
+      "category": "Live Show",
+      "eventTag": "",
+      "uploadedAt": "2026-06-27T22:19:59.712Z",
+      "poster": null,
+      "duration": null
+    },
+    {
+      "id": "vid_1782598081279_8004201c",
+      "filename": "aqpslnqo6eqbbkmfs321zgaelgrsgp2k4bdsh9ojyq3yxw-oktcrwgeaiiwj-1782598081195.mp4",
+      "title": "Nothing Shocking",
+      "category": "Live Show",
+      "eventTag": "",
+      "uploadedAt": "2026-06-27T22:08:01.279Z",
+      "poster": null,
+      "duration": null
     }
-  ],
-  "videos": []
+  ]
 }

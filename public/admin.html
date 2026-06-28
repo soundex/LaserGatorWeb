@@ -43,7 +43,8 @@
         <div id="tab-upload" class="tab-panel active">
           <div class="upload-zone" id="upload-zone">
             <p>Drag &amp; drop files here, or click to browse</p>
-            <p style="font-size:0.85rem;color:var(--text-muted)">.jpg, .png, .webp, .avif, .mp4, .webm</p>
+            <p style="font-size:0.85rem;color:var(--text-muted)">Show photos and videos only (.jpg, .png, .webp, .avif, .mp4, .webm)</p>
+            <p style="font-size:0.85rem;color:var(--text-muted)">Team headshots belong on the About page — add them to <code>public/assets/</code>, not here.</p>
             <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp,.avif,.mp4,.webm,image/avif">
           </div>
           <div class="upload-meta" id="upload-meta">
@@ -60,7 +61,9 @@
                   <option>Festival</option>
                   <option>Corporate</option>
                   <option>Behind the Scenes</option>
+                  <option>Team / Staff</option>
                 </select>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.35rem">“Team / Staff” uploads are kept out of the public gallery.</p>
               </div>
               <div class="form-group">
                 <label for="upload-tag">Event Tag (optional)</label>
