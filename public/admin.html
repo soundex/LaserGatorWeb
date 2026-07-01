@@ -38,6 +38,7 @@
           <button class="tab-btn active" data-tab="tab-upload">Upload Media</button>
           <button class="tab-btn" data-tab="tab-library">Media Library</button>
           <button class="tab-btn" data-tab="tab-events">Events</button>
+          <button class="tab-btn" data-tab="tab-content">Export / Import</button>
         </div>
 
         <div id="tab-upload" class="tab-panel active">
@@ -120,6 +121,38 @@
           </form>
           <h3 style="margin-top:2rem">Existing Events</h3>
           <div class="media-library" id="events-list"></div>
+        </div>
+
+        <div id="tab-content" class="tab-panel">
+          <div class="card">
+            <h3>Export Content Bundle</h3>
+            <p style="color:var(--text-muted);font-size:0.95rem">Download a zip containing the media manifest, events, and all referenced gallery files. Use this to promote content from staging to production.</p>
+            <button type="button" class="btn btn-primary" id="export-btn">Download Content Bundle</button>
+            <p id="export-status" class="admin-status"></p>
+          </div>
+          <div class="card" style="margin-top:1.5rem">
+            <h3>Import Content Bundle</h3>
+            <p style="color:var(--text-muted);font-size:0.95rem">Upload a content bundle zip. Merge adds new entries; Replace overwrites manifest, events, and media files.</p>
+            <form id="import-form">
+              <div class="form-group">
+                <label for="import-file">Bundle (.zip)</label>
+                <input type="file" id="import-file" accept=".zip,application/zip" required>
+              </div>
+              <div class="form-group">
+                <label for="import-mode">Import mode</label>
+                <select id="import-mode">
+                  <option value="merge">Merge — add new entries, skip duplicates</option>
+                  <option value="replace">Replace — overwrite manifest, events, and media</option>
+                </select>
+              </div>
+              <div class="form-group" id="import-confirm-group" style="display:none">
+                <label for="import-confirm">Type REPLACE to confirm</label>
+                <input type="text" id="import-confirm" placeholder="REPLACE">
+              </div>
+              <button type="submit" class="btn btn-primary">Import Bundle</button>
+              <p id="import-status" class="admin-status"></p>
+            </form>
+          </div>
         </div>
       </div>
     </div>

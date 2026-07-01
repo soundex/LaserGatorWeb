@@ -43,6 +43,7 @@
   initUpload();
   initMediaLibrary();
   initEventsEditor();
+  initContentBundle();
 
   function showPanel() {
     loginView.style.display = 'none';
@@ -165,8 +166,8 @@
       const res = await fetch('/data/media-manifest.json');
       const data = await res.json();
       const items = [
-        ...data.images.map((i) => ({ ...i, type: 'image' })),
-        ...data.videos.map((v) => ({ ...v, type: 'video' })),
+        ...(data.images || []).map((i) => ({ ...i, type: 'image' })),
+        ...(data.videos || []).map((v) => ({ ...v, type: 'video' })),
       ];
 
       if (!items.length) {
@@ -314,5 +315,81 @@
 
   function initMediaLibrary() {
     /* loaded on panel show */
+  }
+
+  function initContentBundle() {
+    const exportBtn = document.getElementById('export-btn');
+    const exportStatus = document.getElementById('export-status');
+    const importForm = document.getElementById('import-form');
+    const importMode = document.getElementById('import-mode');
+    const importConfirmGroup = document.getElementById('import-confirm-group');
+    const importStatus = document.getElementById('import-status');
+
+    importMode?.addEventListener('change', () => {
+      importConfirmGroup.style.display = importMode.value === 'replace' ? 'block' : 'none';
+    });
+
+    exportBtn?.addEventListener('click', async () => {
+      exportStatus.textContent = 'Preparing export…';
+      exportStatus.className = 'admin-status';
+      try {
+        const res = await fetch('/api/admin/export', { headers: authHeaders() });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Export failed');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `lasergator-content-${new Date().toISOString().slice(0, 10)}.zip`;
+        a.click();
+        URL.revokeObjectURL(url);
+        exportStatus.textContent = 'Export downloaded.';
+        exportStatus.className = 'admin-status success';
+      } catch (err) {
+        exportStatus.textContent = err.message;
+        exportStatus.className = 'admin-status error';
+      }
+    });
+
+    importForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('import-file');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const mode = importMode.value;
+      const fd = new FormData();
+      fd.append('bundle', file);
+      fd.append('mode', mode);
+      if (mode === 'replace') {
+        fd.append('confirm', document.getElementById('import-confirm').value);
+      }
+
+      importStatus.textContent = 'Importing…';
+      importStatus.className = 'admin-status';
+
+      try {
+        const res = await fetch('/api/admin/import', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: fd,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Import failed');
+
+        const r = data.report;
+        importStatus.textContent = `Import complete (${r.mode}). Media copied: ${r.mediaReport.copied}, skipped: ${r.mediaReport.skipped}. Pruned: ${r.pruneReport.removed}.`;
+        importStatus.className = 'admin-status success';
+        importForm.reset();
+        importConfirmGroup.style.display = 'none';
+        loadMediaLibrary();
+        loadEventsList();
+      } catch (err) {
+        importStatus.textContent = err.message;
+        importStatus.className = 'admin-status error';
+      }
+    });
   }
 })();

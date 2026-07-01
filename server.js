@@ -3,6 +3,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const fsp = require('fs').promises;
+const os = require('os');
 const path = require('path');
 
 const bcrypt = require('bcryptjs');
@@ -13,21 +14,25 @@ const helmet = require('helmet');
 const multer = require('multer');
 const sharp = require('sharp');
 
+const contentBundle = require('./lib/content-bundle');
+
 dotenv.config();
 
 const ROOT = __dirname;
+const PATHS = contentBundle.createPaths(ROOT);
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const DATA_DIR = path.join(ROOT, 'data');
-const MEDIA_IMAGES = path.join(PUBLIC_DIR, 'media', 'images');
-const MEDIA_VIDEOS = path.join(PUBLIC_DIR, 'media', 'videos');
-const MANIFEST_PATH = path.join(DATA_DIR, 'media-manifest.json');
-const EVENTS_PATH = path.join(DATA_DIR, 'events.json');
+const DATA_DIR = PATHS.dataDir;
+const MEDIA_IMAGES = PATHS.mediaImages;
+const MEDIA_VIDEOS = PATHS.mediaVideos;
+const MANIFEST_PATH = PATHS.manifestPath;
+const EVENTS_PATH = PATHS.eventsPath;
 const CONTACT_LOG_PATH = path.join(DATA_DIR, 'contact-log.json');
 const BACKUP_DIR = path.join(DATA_DIR, 'backups');
 
 const PORT = Number(process.env.PORT) || 3000;
 const TOKEN_SECRET = process.env.TOKEN_SECRET || 'dev-secret-change-me';
 const MAX_UPLOAD_MB = Number(process.env.MAX_UPLOAD_MB) || 500;
+const MAX_IMPORT_MB = Number(process.env.MAX_IMPORT_MB) || 2048;
 const TOKEN_TTL_MS = 8 * 60 * 60 * 1000;
 
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
@@ -44,6 +49,25 @@ app.use(helmet({
 app.use(express.json({ limit: '1mb' }));
 
 ensureDirs();
+
+const importUpload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, cb) {
+      cb(null, os.tmpdir());
+    },
+    filename(req, file, cb) {
+      cb(null, `lg-import-${Date.now()}.zip`);
+    },
+  }),
+  limits: { fileSize: MAX_IMPORT_MB * 1024 * 1024 },
+  fileFilter(req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ext === '.zip' || file.mimetype === 'application/zip' || file.mimetype === 'application/x-zip-compressed') {
+      return cb(null, true);
+    }
+    cb(new Error('Import bundle must be a .zip file.'));
+  },
+});
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -255,6 +279,49 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
+app.get('/api/admin/export', requireAuth, async (req, res) => {
+  try {
+    const filename = contentBundle.exportFilename();
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    const meta = await contentBundle.exportContentBundle(PATHS, res, process.env.APP_ENV || process.env.NODE_ENV);
+    console.log(`Content export: ${meta.fileCount} files`);
+  } catch (err) {
+    console.error('Export error:', err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Export failed.' });
+    }
+  }
+});
+
+app.post('/api/admin/import', requireAuth, importUpload.single('bundle'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No import bundle uploaded.' });
+    }
+
+    const mode = req.body.mode === 'replace' ? 'replace' : 'merge';
+    if (mode === 'replace' && req.body.confirm !== 'REPLACE') {
+      await safeUnlink(req.file.path);
+      return res.status(400).json({ error: 'Replace mode requires confirm=REPLACE.' });
+    }
+
+    const report = await contentBundle.importContentBundle(
+      PATHS,
+      req.file.path,
+      mode,
+      (filePath, data) => writeJsonAtomic(filePath, data)
+    );
+
+    await safeUnlink(req.file.path);
+    res.json({ success: true, report });
+  } catch (err) {
+    console.error('Import error:', err);
+    if (req.file?.path) await safeUnlink(req.file.path);
+    res.status(500).json({ error: err.message || 'Import failed.' });
+  }
+});
+
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: err.code === 'LIMIT_FILE_SIZE' ? `File exceeds ${MAX_UPLOAD_MB}MB limit.` : err.message });
@@ -266,21 +333,47 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  logAuthMode();
-  console.log(`LaserGator site running at http://localhost:${PORT}`);
-});
+async function boot() {
+  ensureDirs();
+  await seedRuntimeData();
+  const { removed } = await contentBundle.validateAndPruneManifest(
+    PATHS,
+    (filePath, data) => writeJsonAtomic(filePath, data)
+  );
+  if (removed > 0) {
+    console.warn(`Manifest integrity: removed ${removed} entries with missing media files.`);
+  }
+}
+
+boot()
+  .then(() => {
+    app.listen(PORT, () => {
+      logAuthMode();
+      console.log(`LaserGator site running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Startup failed:', err);
+    process.exit(1);
+  });
 
 function ensureDirs() {
   for (const dir of [DATA_DIR, BACKUP_DIR, MEDIA_IMAGES, MEDIA_VIDEOS]) {
     fs.mkdirSync(dir, { recursive: true });
   }
-  if (!fs.existsSync(MANIFEST_PATH)) {
-    fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ lastUpdated: null, images: [], videos: [] }, null, 2));
-  }
-  if (!fs.existsSync(EVENTS_PATH)) {
-    fs.writeFileSync(EVENTS_PATH, JSON.stringify({ events: [] }, null, 2));
-  }
+}
+
+async function seedRuntimeData() {
+  await contentBundle.seedRuntimeFile(
+    MANIFEST_PATH,
+    PATHS.manifestExamplePath,
+    { lastUpdated: null, images: [], videos: [] }
+  );
+  await contentBundle.seedRuntimeFile(
+    EVENTS_PATH,
+    PATHS.eventsExamplePath,
+    { events: [] }
+  );
 }
 
 function getPasswordHash() {
@@ -360,15 +453,7 @@ async function readJson(filePath, fallback) {
 }
 
 async function writeJsonAtomic(filePath, data) {
-  await fsp.mkdir(BACKUP_DIR, { recursive: true });
-  if (fs.existsSync(filePath)) {
-    const backupName = `${path.basename(filePath, '.json')}-${Date.now()}.json`;
-    await fsp.copyFile(filePath, path.join(BACKUP_DIR, backupName));
-  }
-
-  const tmp = `${filePath}.tmp`;
-  await fsp.writeFile(tmp, JSON.stringify(data, null, 2), 'utf8');
-  await fsp.rename(tmp, filePath);
+  await contentBundle.writeJsonAtomic(filePath, data, BACKUP_DIR);
 }
 
 function isAllowedImage(file, ext) {
