@@ -58,6 +58,7 @@
               <span class="logo-text">LASERGATOR</span>
             </a>
             <p>Professional laser shows for live events, festivals, and corporate productions across the Pacific Northwest and beyond.</p>
+            <img src="/assets/spokesgator.png" alt="" class="footer-mascot">
           </div>
           <div class="footer-links">
             <h4>Explore</h4>
