@@ -1,4 +1,11 @@
 (function () {
+  const LOGO = { src: '/assets/logo-icon.png', alt: 'LaserGator' };
+
+  function renderLogoMark(footer = false) {
+    const imgClass = footer ? 'logo-mark logo-mark--footer' : 'logo-mark';
+    return `<img src="${LOGO.src}" alt="" class="${imgClass}">`;
+  }
+
   const NAV_ITEMS = [
     { href: '/index.html', label: 'Home', page: 'home' },
     { href: '/services.html', label: 'Services', page: 'services' },
@@ -22,8 +29,8 @@
     el.innerHTML = `
       <header class="site-header">
         <div class="container nav-inner">
-          <a href="/index.html" class="logo-link">
-            <img src="/assets/logo.svg" alt="" class="logo-mark" width="44" height="44">
+          <a href="/index.html" class="logo-link" aria-label="${LOGO.alt} home">
+            ${renderLogoMark()}
             <span class="logo-text">LASERGATOR</span>
           </a>
           <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
@@ -53,12 +60,11 @@
       <footer class="site-footer">
         <div class="container footer-grid">
           <div class="footer-brand">
-            <a href="/index.html" class="logo-link">
-              <img src="/assets/logo.svg" alt="" class="logo-mark" width="36" height="36">
+            <a href="/index.html" class="logo-link" aria-label="${LOGO.alt} home">
+              ${renderLogoMark(true)}
               <span class="logo-text">LASERGATOR</span>
             </a>
             <p>Professional laser shows for live events, festivals, and corporate productions across the Pacific Northwest and beyond.</p>
-            <img src="/assets/spokesgator.png" alt="" class="footer-mascot">
           </div>
           <div class="footer-links">
             <h4>Explore</h4>
@@ -66,6 +72,7 @@
               <li><a href="/services.html">Services</a></li>
               <li><a href="/gallery.html">Gallery</a></li>
               <li><a href="/about.html">About</a></li>
+              <li><a href="/about.html#compliance">Safety &amp; Compliance</a></li>
               <li><a href="/events.html">Events</a></li>
               <li><a href="/contact.html">Contact</a></li>
             </ul>
@@ -117,6 +124,7 @@
     renderNav();
     renderFooter();
     revealFadeIns();
+    window.LaserGatorFX?.init();
   });
 
   window.LaserGator = { revealFadeIns };

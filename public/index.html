@@ -9,7 +9,7 @@
   <meta property="og:description" content="Custom laser shows for live events, festivals, and corporate productions.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://laser-gator.com/">
-  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/logo-icon.png" type="image/png">
   <meta property="og:image" content="https://laser-gator.com/assets/spokesgator.png">
   <link rel="stylesheet" href="/css/variables.css">
   <link rel="stylesheet" href="/css/main.css">
@@ -22,31 +22,7 @@
   <div id="site-nav"></div>
 
   <section class="hero">
-    <div class="hero-beams" aria-hidden="true">
-      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="beam1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#39FF14" stop-opacity="0"/>
-            <stop offset="50%" stop-color="#39FF14" stop-opacity="0.7"/>
-            <stop offset="100%" stop-color="#39FF14" stop-opacity="0"/>
-          </linearGradient>
-          <linearGradient id="beam2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#B026FF" stop-opacity="0"/>
-            <stop offset="50%" stop-color="#B026FF" stop-opacity="0.6"/>
-            <stop offset="100%" stop-color="#B026FF" stop-opacity="0"/>
-          </linearGradient>
-          <linearGradient id="beam3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#00E8FF" stop-opacity="0"/>
-            <stop offset="50%" stop-color="#00E8FF" stop-opacity="0.55"/>
-            <stop offset="100%" stop-color="#00E8FF" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <line class="beam beam-1" x1="100" y1="650" x2="600" y2="50" stroke="url(#beam1)" stroke-width="4"/>
-        <line class="beam beam-2" x1="200" y1="700" x2="700" y2="100" stroke="url(#beam2)" stroke-width="3"/>
-        <line class="beam beam-3" x1="0" y1="400" x2="1200" y2="350" stroke="url(#beam3)" stroke-width="2"/>
-        <line class="beam beam-4" x1="400" y1="750" x2="900" y2="80" stroke="url(#beam1)" stroke-width="2"/>
-      </svg>
-    </div>
+    <div class="hero-beams" aria-hidden="true"></div>
     <div class="container hero-grid">
       <div class="hero-content fade-in">
         <p class="hero-tagline">Pacific Northwest Laser Shows</p>
@@ -71,15 +47,17 @@
     </div>
     <div class="stat-card card fade-in">
       <div class="stat-value">LSO</div>
-      <div class="stat-label">Laser Safety Certified</div>
+      <div class="stat-label">All Operators LSO Certified</div>
     </div>
-    <div class="stat-card card fade-in">
-      <div class="stat-value">FDA</div>
-      <div class="stat-label">Variance Approved</div>
-    </div>
+      <div class="stat-card card fade-in">
+        <div class="stat-value">FDA</div>
+        <div class="stat-label">CDRH Variance Approved</div>
+      </div>
   </section>
 
-  <section class="section spokesgator-section">
+  <div data-laser-divider></div>
+
+  <section class="section spokesgator-section laser-corners">
     <div class="container spokesgator-feature fade-in">
       <div class="spokesgator-visual">
         <img src="/assets/spokesgator.png" alt="SpokesGator — LaserGator mascot in leather jacket and laser shades">
@@ -94,9 +72,11 @@
     </div>
   </section>
 
+  <div data-laser-divider></div>
+
   <section class="section">
     <div class="container">
-      <div class="section-header fade-in">
+      <div class="section-header section-header--laser fade-in">
         <h2>What We <span class="accent-neon">Do</span></h2>
         <p>From concept to showtime — full-service laser entertainment for any venue.</p>
       </div>
@@ -112,23 +92,20 @@
           <p>Logo integration, setlist choreography, and creative direction for your production.</p>
         </article>
         <article class="card fade-in">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          <h3>Music Services</h3>
-          <p>Connect with entertainers and musicians through our curated catalog.</p>
-        </article>
-        <article class="card fade-in">
-          <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <h3>Live Streaming</h3>
-          <p>Multi-camera production, social broadcast, and edited show copies.</p>
+          <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 19l19-7-7-2-3 6-5 1-1-6-3-3z"/><path d="M12 19v-4"/></svg>
+          <h3>7140-1 FAA Applications and Coordination</h3>
+          <p>FAA Form 7140-1 applications, NOTAMs, and airspace coordination for outdoor laser displays.</p>
         </article>
       </div>
       <p style="text-align:center;margin-top:2rem"><a href="/services.html" class="btn btn-outline">View All Services</a></p>
     </div>
   </section>
 
-  <section class="section video-reel diagonal-top">
+  <div data-laser-divider></div>
+
+  <section class="section video-reel diagonal-top laser-corners">
     <div class="container">
-      <div class="section-header fade-in">
+      <div class="section-header section-header--laser fade-in">
         <h2>See It <span class="accent-magenta">Live</span></h2>
         <p>Featured show reel from our latest productions.</p>
       </div>
@@ -147,7 +124,7 @@
     </div>
   </section>
 
-  <section class="section cta-banner">
+  <section class="section cta-banner laser-corners">
     <div class="container fade-in">
       <h2>Ready to Light Up Your Event?</h2>
       <p>Let's talk about your venue, your vision, and how we can make it unforgettable.</p>
@@ -156,6 +133,7 @@
   </section>
 
   <div id="site-footer"></div>
+  <script src="/js/lasers.js"></script>
   <script src="/js/main.js"></script>
   <script src="/js/home.js"></script>
 </body>

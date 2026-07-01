@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Orbitron:wght@500;700&display=swap');
+@import url('lasers.css');
 
 *,
 *::before,
@@ -223,14 +224,21 @@ p {
 }
 
 .logo-mark {
+  flex-shrink: 0;
+  display: block;
   width: 44px;
   height: 44px;
   animation: logo-glow 3s ease-in-out infinite;
 }
 
+.logo-mark--footer {
+  width: 40px;
+  height: 40px;
+}
+
 @keyframes logo-glow {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.5)); }
-  50% { filter: drop-shadow(0 0 20px rgba(0, 232, 255, 0.9)); }
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(57, 255, 20, 0.55)); }
+  50% { filter: drop-shadow(0 0 16px rgba(0, 232, 255, 0.85)); }
 }
 
 .logo-text {
@@ -293,14 +301,7 @@ p {
 
 .footer-brand p {
   max-width: 320px;
-}
-
-.footer-mascot {
-  margin-top: 1.25rem;
-  width: 88px;
-  height: auto;
-  opacity: 0.95;
-  filter: drop-shadow(0 0 12px rgba(57, 255, 20, 0.35));
+  margin-top: 0.75rem;
 }
 
 .footer-links h4,
@@ -344,6 +345,12 @@ p {
     radial-gradient(ellipse at 20% 80%, rgba(57, 255, 20, 0.08) 0%, transparent 50%),
     linear-gradient(180deg, rgba(0, 232, 255, 0.05) 0%, transparent 100%);
   border-bottom: 1px solid rgba(57, 255, 20, 0.1);
+}
+
+.page-hero .container,
+.page-hero .page-hero-split {
+  position: relative;
+  z-index: 1;
 }
 
 .page-hero h1 {

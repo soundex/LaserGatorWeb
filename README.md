@@ -135,7 +135,30 @@ npm run validate-manifest
 
 ## Contact form
 
-Submissions are logged to `data/contact-log.json`. Wire up SMTP or a transactional email provider in `server.js` when ready for production email delivery.
+Submissions are always logged to `data/contact-log.json`. When SMTP is configured, the server also emails the team via nodemailer (same pattern as Gigigator and ShowMageddon).
+
+Set these environment variables on Railway (or in `.env` locally):
+
+| Variable | Example | Notes |
+|---|---|---|
+| `SMTP_HOST` | `smtp.gmail.com` | Google SMTP host |
+| `SMTP_PORT` | `587` | Use `465` with `SMTP_SECURE=true` for SSL |
+| `SMTP_SECURE` | `false` | `true` for port 465 |
+| `SMTP_USER` | `your-account@laser-gator.com` | Google account used to send |
+| `SMTP_PASSWORD` | *(app password)* | Google App Password — not your login password |
+| `SMTP_FROM_EMAIL` | `paul@laser-gator.com` | From address shown to recipients |
+| `SMTP_FROM_NAME` | `LaserGator Website` | Display name in inbox |
+| `CONTACT_TO` | `paul@laser-gator.com,milo@laser-gator.com` | Comma-separated recipients |
+
+`SMTP_PASS` is also accepted as an alias for `SMTP_PASSWORD` (ShowMageddon compatibility). `SMTP_FROM` is accepted as an alias for `SMTP_FROM_EMAIL`.
+
+### Google setup
+
+1. Enable 2-Step Verification on the Google account.
+2. Create an [App Password](https://myaccount.google.com/apppasswords) for “Mail”.
+3. Use `smtp.gmail.com`, port `587`, and the app password as `SMTP_PASSWORD`.
+
+If SMTP is not configured, the form still accepts submissions and logs them locally. In production, the server logs a startup warning until SMTP is set.
 
 ## Deployment
 

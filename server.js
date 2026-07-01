@@ -15,6 +15,7 @@ const multer = require('multer');
 const sharp = require('sharp');
 
 const contentBundle = require('./lib/content-bundle');
+const email = require('./lib/email');
 
 dotenv.config();
 
@@ -99,6 +100,14 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many login attempts. Try again in 15 minutes.' },
+});
+
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many messages sent. Please try again later or call us directly.' },
 });
 
 app.get('/health', (req, res) => {
@@ -252,16 +261,16 @@ app.delete('/api/events/:id', requireAuth, async (req, res) => {
   }
 });
 
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', contactLimiter, async (req, res) => {
   try {
-    const { name, email, eventDate, venue, message } = req.body;
-    if (!name?.trim() || !email?.trim() || !message?.trim()) {
+    const { name, email: senderEmail, eventDate, venue, message } = req.body;
+    if (!name?.trim() || !senderEmail?.trim() || !message?.trim()) {
       return res.status(400).json({ error: 'Name, email, and message are required.' });
     }
 
     const entry = {
       name: name.trim(),
-      email: email.trim(),
+      email: senderEmail.trim(),
       eventDate: (eventDate || '').trim(),
       venue: (venue || '').trim(),
       message: message.trim(),
@@ -271,6 +280,14 @@ app.post('/api/contact', async (req, res) => {
     const log = await readJson(CONTACT_LOG_PATH, []);
     log.unshift(entry);
     await writeJsonAtomic(CONTACT_LOG_PATH, log.slice(0, 200));
+
+    if (email.isEmailConfigured()) {
+      const result = await email.sendContactEmail(entry);
+      if (!result.success) {
+        console.error('Contact email failed after logging submission:', result.error);
+        return res.status(500).json({ error: 'Could not send message. Please call us directly.' });
+      }
+    }
 
     res.json({ success: true, message: 'Thank you! We will be in touch soon.' });
   } catch (err) {
@@ -349,6 +366,7 @@ boot()
   .then(() => {
     app.listen(PORT, () => {
       logAuthMode();
+      email.logEmailMode();
       console.log(`LaserGator site running at http://localhost:${PORT}`);
     });
   })

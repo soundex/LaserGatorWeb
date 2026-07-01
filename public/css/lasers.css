@@ -1,0 +1,165 @@
+/* Laser show visuals — beams, fans, dividers, scan effects */
+
+.laser-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.laser-scene svg {
+  width: 100%;
+  height: 100%;
+}
+
+.laser-scene .laser-beam {
+  stroke-linecap: round;
+  animation: laser-sweep var(--laser-dur, 8s) ease-in-out infinite;
+  transform-origin: center;
+}
+
+.laser-scene .laser-beam--slow { --laser-dur: 12s; animation-delay: -2s; }
+.laser-scene .laser-beam--fast { --laser-dur: 6s; animation-delay: -4s; }
+.laser-scene .laser-beam--alt { animation-delay: -6s; }
+
+@keyframes laser-sweep {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.95; }
+}
+
+.laser-scene .laser-origin {
+  filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.9));
+}
+
+.laser-scene .laser-haze {
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+
+/* Page hero laser backdrop */
+.page-hero,
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero > .container,
+.page-hero > .page-hero-split,
+.hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.page-hero .laser-scene {
+  opacity: 0.55;
+}
+
+/* Crossing-beam section divider */
+.laser-divider {
+  position: relative;
+  height: 72px;
+  overflow: hidden;
+  background: linear-gradient(180deg, transparent, rgba(57, 255, 20, 0.03), transparent);
+}
+
+.laser-divider svg {
+  width: 100%;
+  height: 100%;
+}
+
+.laser-divider .laser-beam {
+  stroke-linecap: round;
+  animation: laser-pulse 4s ease-in-out infinite;
+}
+
+.laser-divider .laser-beam:nth-child(2) { animation-delay: -1.3s; }
+.laser-divider .laser-beam:nth-child(3) { animation-delay: -2.6s; }
+
+@keyframes laser-pulse {
+  0%, 100% { opacity: 0.3; stroke-width: 1.5; }
+  50% { opacity: 0.9; stroke-width: 2.5; }
+}
+
+/* Ambient laser corners on featured sections */
+.laser-corners {
+  position: relative;
+}
+
+.laser-corners::before,
+.laser-corners::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.laser-corners::before {
+  top: 0;
+  left: 0;
+  background:
+    linear-gradient(135deg, rgba(57, 255, 20, 0.35) 0%, transparent 55%),
+    linear-gradient(45deg, transparent 40%, rgba(0, 232, 255, 0.15) 100%);
+}
+
+.laser-corners::after {
+  bottom: 0;
+  right: 0;
+  background:
+    linear-gradient(-45deg, rgba(176, 38, 255, 0.35) 0%, transparent 55%),
+    linear-gradient(-135deg, transparent 40%, rgba(255, 0, 128, 0.12) 100%);
+}
+
+.laser-corners > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scan line sweep (hero / CTA) */
+.laser-scan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.laser-scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.8), rgba(0, 232, 255, 0.8), transparent);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
+  animation: laser-scan-line 7s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes laser-scan-line {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+/* Section header laser underline */
+.section-header--laser h2::after {
+  content: '';
+  display: block;
+  width: min(200px, 60%);
+  height: 2px;
+  margin: 0.75rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--accent-neon), var(--accent-cyan), var(--accent-magenta), transparent);
+  box-shadow: 0 0 16px rgba(57, 255, 20, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laser-scene .laser-beam,
+  .laser-divider .laser-beam,
+  .laser-scan::after {
+    animation: none;
+    opacity: 0.5;
+  }
+}
