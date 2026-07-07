@@ -42,7 +42,9 @@
   initTabs();
   initUpload();
   initMediaLibrary();
-  initEventsEditor();
+  if (document.getElementById('event-form')) {
+    initEventsEditor();
+  }
   initContentBundle();
   initEmailDiagnostics();
 
@@ -50,7 +52,6 @@
     loginView.style.display = 'none';
     panelView.style.display = 'block';
     loadMediaLibrary();
-    loadEventsList();
   }
 
   function getToken() {
@@ -389,7 +390,9 @@
         importForm.reset();
         importConfirmGroup.style.display = 'none';
         loadMediaLibrary();
-        loadEventsList();
+        if (document.getElementById('events-list')) {
+          loadEventsList();
+        }
       } catch (err) {
         importStatus.textContent = err.message;
         importStatus.className = 'admin-status error';

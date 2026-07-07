@@ -15,7 +15,7 @@
     <div class="container">
       <div id="admin-login" class="admin-login">
         <h1>Admin Login</h1>
-        <p>Upload media and manage events.</p>
+        <p>Upload media and manage site content.</p>
         <div class="card" style="margin-top:2rem">
           <form id="login-form">
             <div class="form-group">
@@ -37,7 +37,9 @@
         <div class="admin-tabs">
           <button class="tab-btn active" data-tab="tab-upload">Upload Media</button>
           <button class="tab-btn" data-tab="tab-library">Media Library</button>
+          <!-- Events tab disabled until ShowMageddon calendar sync is available
           <button class="tab-btn" data-tab="tab-events">Events</button>
+          -->
           <button class="tab-btn" data-tab="tab-content">Export / Import</button>
           <button class="tab-btn" data-tab="tab-email">Email</button>
         </div>
@@ -82,6 +84,7 @@
           <div class="media-library" id="media-library"></div>
         </div>
 
+        <!-- Events tab disabled until ShowMageddon calendar sync is available
         <div id="tab-events" class="tab-panel">
           <form id="event-form" class="event-form card">
             <input type="hidden" id="event-id">
@@ -123,6 +126,7 @@
           <h3 style="margin-top:2rem">Existing Events</h3>
           <div class="media-library" id="events-list"></div>
         </div>
+        -->
 
         <div id="tab-content" class="tab-panel">
           <div class="card">
