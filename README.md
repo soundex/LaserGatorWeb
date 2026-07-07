@@ -169,6 +169,17 @@ Set these environment variables on Railway (or in `.env` locally):
 
 If SMTP is not configured, the form still accepts submissions and logs them locally. In production, the server logs a startup warning until SMTP is set.
 
+### Email diagnostics (admin)
+
+After deploying, open **Admin → Email** to confirm SMTP is wired correctly:
+
+1. **Status** — shows whether required env vars are set, masked SMTP user, from address, and `CONTACT_TO` recipients.
+2. **Run SMTP Verify** — checks the server can connect and authenticate to your SMTP host (no email sent).
+3. **Send Test Email** — delivers a test message to `CONTACT_TO` (or an optional address you enter).
+4. **Email Log** — recent events (startup checks, contact sends, verifications, test emails) stored in `data/email-log.json` on the Railway volume.
+
+Use this tab after each deploy or when changing SMTP credentials on Railway.
+
 ## Deployment
 
 Run behind HTTPS (Caddy, Cloudflare, or nginx). Keep the process alive with pm2 or NSSM on Windows:

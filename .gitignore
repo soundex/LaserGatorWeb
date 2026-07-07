@@ -5,6 +5,7 @@ public/media/*
 !public/media/videos/.gitkeep
 data/backups/
 data/contact-log.json
+data/email-log.json
 data/media-manifest.json
 data/events.json
 exports/

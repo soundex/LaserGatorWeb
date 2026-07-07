@@ -28,6 +28,7 @@ const MEDIA_VIDEOS = PATHS.mediaVideos;
 const MANIFEST_PATH = PATHS.manifestPath;
 const EVENTS_PATH = PATHS.eventsPath;
 const CONTACT_LOG_PATH = path.join(DATA_DIR, 'contact-log.json');
+const EMAIL_LOG_PATH = path.join(DATA_DIR, 'email-log.json');
 const BACKUP_DIR = path.join(DATA_DIR, 'backups');
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -297,6 +298,44 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
   }
 });
 
+app.get('/api/admin/email/status', requireAuth, (req, res) => {
+  res.json({ diagnostics: email.getDiagnostics() });
+});
+
+app.post('/api/admin/email/verify', requireAuth, async (req, res) => {
+  try {
+    const result = await email.verifySmtpConnection();
+    res.json(result);
+  } catch (err) {
+    console.error('Email verify error:', err);
+    res.status(500).json({ success: false, error: 'SMTP verification failed.' });
+  }
+});
+
+app.post('/api/admin/email/test', requireAuth, async (req, res) => {
+  try {
+    const to = req.body?.to?.trim();
+    const result = await email.sendTestEmail(to);
+    if (!result.success) {
+      return res.status(500).json(result);
+    }
+    res.json(result);
+  } catch (err) {
+    console.error('Email test error:', err);
+    res.status(500).json({ success: false, error: 'Test email failed.' });
+  }
+});
+
+app.get('/api/admin/email/log', requireAuth, async (req, res) => {
+  try {
+    const log = await readJson(EMAIL_LOG_PATH, []);
+    res.json({ log: log.slice(0, 50) });
+  } catch (err) {
+    console.error('Email log error:', err);
+    res.status(500).json({ error: 'Could not read email log.' });
+  }
+});
+
 app.get('/api/admin/export', requireAuth, async (req, res) => {
   try {
     const filename = contentBundle.exportFilename();
@@ -352,6 +391,12 @@ app.use((err, req, res, next) => {
 });
 
 async function boot() {
+  email.setEmailLogAppender(async (entry) => {
+    const log = await readJson(EMAIL_LOG_PATH, []);
+    log.unshift(entry);
+    await writeJsonAtomic(EMAIL_LOG_PATH, log.slice(0, 100));
+  });
+
   ensureDirs();
   await seedRuntimeData();
   const { removed } = await contentBundle.validateAndPruneManifest(

@@ -175,3 +175,120 @@
 
 .admin-status.error { color: #ff6eb4; }
 .admin-status.success { color: var(--accent-cyan); }
+
+.email-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.email-status-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.email-status-full {
+  grid-column: 1 / -1;
+}
+
+.email-status-label {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.email-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.email-badge-ok {
+  background: rgba(0, 255, 200, 0.15);
+  color: var(--accent-cyan);
+}
+
+.email-badge-warn {
+  background: rgba(255, 110, 180, 0.15);
+  color: #ff6eb4;
+}
+
+.email-missing {
+  color: #ff6eb4;
+}
+
+.email-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.email-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.email-log-header h3 {
+  margin: 0;
+}
+
+.email-log {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.email-log-entry {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.email-log-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.email-log-type {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.email-log-time {
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.email-log-detail {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  word-break: break-word;
+}
+
+@media (max-width: 600px) {
+  .email-status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .email-log-time {
+    margin-left: 0;
+    width: 100%;
+  }
+}

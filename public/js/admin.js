@@ -44,6 +44,7 @@
   initMediaLibrary();
   initEventsEditor();
   initContentBundle();
+  initEmailDiagnostics();
 
   function showPanel() {
     loginView.style.display = 'none';
@@ -67,6 +68,9 @@
         document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'tab-email') {
+          loadEmailDiagnostics();
+        }
       });
     });
   }
@@ -391,5 +395,189 @@
         importStatus.className = 'admin-status error';
       }
     });
+  }
+
+  function initEmailDiagnostics() {
+    const verifyBtn = document.getElementById('email-verify-btn');
+    const testBtn = document.getElementById('email-test-btn');
+    const refreshBtn = document.getElementById('email-log-refresh');
+    const actionStatus = document.getElementById('email-action-status');
+    const testTo = document.getElementById('email-test-to');
+
+    verifyBtn?.addEventListener('click', async () => {
+      actionStatus.textContent = 'Verifying SMTP connection…';
+      actionStatus.className = 'admin-status';
+      verifyBtn.disabled = true;
+      try {
+        const res = await fetch('/api/admin/email/verify', {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'SMTP verification failed');
+        }
+        actionStatus.textContent = 'SMTP connection verified successfully.';
+        actionStatus.className = 'admin-status success';
+        await loadEmailDiagnostics();
+      } catch (err) {
+        actionStatus.textContent = err.message;
+        actionStatus.className = 'admin-status error';
+        await loadEmailLog();
+      } finally {
+        verifyBtn.disabled = false;
+      }
+    });
+
+    testBtn?.addEventListener('click', async () => {
+      actionStatus.textContent = 'Sending test email…';
+      actionStatus.className = 'admin-status';
+      testBtn.disabled = true;
+      try {
+        const body = {};
+        if (testTo?.value.trim()) body.to = testTo.value.trim();
+        const res = await fetch('/api/admin/email/test', {
+          method: 'POST',
+          headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Test email failed');
+        }
+        actionStatus.textContent = `Test email sent${data.messageId ? ` (${data.messageId})` : ''}.`;
+        actionStatus.className = 'admin-status success';
+        await loadEmailDiagnostics();
+      } catch (err) {
+        actionStatus.textContent = err.message;
+        actionStatus.className = 'admin-status error';
+        await loadEmailLog();
+      } finally {
+        testBtn.disabled = false;
+      }
+    });
+
+    refreshBtn?.addEventListener('click', () => loadEmailDiagnostics());
+  }
+
+  async function loadEmailDiagnostics() {
+    await Promise.all([loadEmailStatus(), loadEmailLog()]);
+  }
+
+  async function loadEmailStatus() {
+    const grid = document.getElementById('email-status-grid');
+    if (!grid) return;
+    grid.innerHTML = '<p style="color:var(--text-muted)">Loading…</p>';
+    try {
+      const res = await fetch('/api/admin/email/status', { headers: authHeaders() });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not load email status');
+      grid.innerHTML = renderEmailStatus(data.diagnostics);
+    } catch (err) {
+      grid.innerHTML = `<p class="admin-status error">${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  function renderEmailStatus(d) {
+    const configuredClass = d.configured ? 'email-badge-ok' : 'email-badge-warn';
+    const configuredLabel = d.configured ? 'Configured' : 'Not configured';
+
+    let html = `
+      <div class="email-status-item">
+        <span class="email-status-label">Status</span>
+        <span class="email-badge ${configuredClass}">${configuredLabel}</span>
+      </div>
+      <div class="email-status-item">
+        <span class="email-status-label">Nodemailer</span>
+        <span>${escapeHtml(d.nodemailerVersion)}</span>
+      </div>
+      <div class="email-status-item">
+        <span class="email-status-label">Contact recipients</span>
+        <span>${escapeHtml((d.contactTo || []).join(', '))}</span>
+      </div>
+    `;
+
+    if (d.missingVars?.length) {
+      html += `
+        <div class="email-status-item email-status-full">
+          <span class="email-status-label">Missing variables</span>
+          <span class="email-missing">${escapeHtml(d.missingVars.join(', '))}</span>
+        </div>
+      `;
+    }
+
+    if (d.smtp) {
+      html += `
+        <div class="email-status-item">
+          <span class="email-status-label">SMTP host</span>
+          <span>${escapeHtml(d.smtp.host)}:${d.smtp.port}</span>
+        </div>
+        <div class="email-status-item">
+          <span class="email-status-label">Secure</span>
+          <span>${d.smtp.secure ? 'Yes' : 'No (STARTTLS)'}</span>
+        </div>
+        <div class="email-status-item">
+          <span class="email-status-label">SMTP user</span>
+          <span>${escapeHtml(d.smtp.user)}</span>
+        </div>
+        <div class="email-status-item">
+          <span class="email-status-label">From</span>
+          <span>${escapeHtml(d.smtp.fromName)} &lt;${escapeHtml(d.smtp.fromEmail)}&gt;</span>
+        </div>
+      `;
+    }
+
+    return html;
+  }
+
+  async function loadEmailLog() {
+    const container = document.getElementById('email-log');
+    if (!container) return;
+    try {
+      const res = await fetch('/api/admin/email/log', { headers: authHeaders() });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not load email log');
+      container.innerHTML = renderEmailLog(data.log || []);
+    } catch (err) {
+      container.innerHTML = `<p class="admin-status error">${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  function renderEmailLog(entries) {
+    if (!entries.length) {
+      return '<p style="color:var(--text-muted)">No email events logged yet.</p>';
+    }
+
+    const rows = entries.map((entry) => {
+      const ok = entry.success;
+      const badgeClass = ok ? 'email-badge-ok' : 'email-badge-warn';
+      const badgeLabel = ok ? 'OK' : 'Failed';
+      const detail = entry.error
+        || entry.detail
+        || (entry.messageId ? `Message ID: ${entry.messageId}` : '')
+        || (entry.to ? `To: ${Array.isArray(entry.to) ? entry.to.join(', ') : entry.to}` : '');
+
+      return `
+        <div class="email-log-entry">
+          <div class="email-log-meta">
+            <span class="email-badge ${badgeClass}">${badgeLabel}</span>
+            <span class="email-log-type">${escapeHtml(entry.type || 'event')}</span>
+            <span class="email-log-time">${escapeHtml(formatLogTime(entry.at))}</span>
+          </div>
+          ${detail ? `<p class="email-log-detail">${escapeHtml(detail)}</p>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    return rows;
+  }
+
+  function formatLogTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleString();
+    } catch {
+      return iso;
+    }
   }
 })();
