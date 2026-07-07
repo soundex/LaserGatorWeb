@@ -58,8 +58,17 @@ Attach **separate volumes** to each Railway service so uploads survive redeploys
 
 | Mount path | Purpose |
 |---|---|
-| `/data` | `media-manifest.json`, `events.json`, backups |
+| `/data` | `media-manifest.json`, `events.json`, `contact-log.json`, backups |
 | `/public/media` | Uploaded images and videos |
+
+Set these Railway **variables** to match the mount paths:
+
+```
+DATA_DIR=/data
+MEDIA_ROOT=/public/media
+```
+
+Without `DATA_DIR`, the app writes to `./data` inside the container (not the volume), which can fail on Railway or lose submissions on redeploy.
 
 Staging and production must use **different volumes** so staging experiments never overwrite live content.
 

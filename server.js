@@ -43,6 +43,8 @@ const VIDEO_EXT = new Set(['.mp4', '.webm']);
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
@@ -285,7 +287,6 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
       const result = await email.sendContactEmail(entry);
       if (!result.success) {
         console.error('Contact email failed after logging submission:', result.error);
-        return res.status(500).json({ error: 'Could not send message. Please call us directly.' });
       }
     }
 
@@ -367,6 +368,7 @@ boot()
     app.listen(PORT, () => {
       logAuthMode();
       email.logEmailMode();
+      console.log(`Data directory: ${DATA_DIR}`);
       console.log(`LaserGator site running at http://localhost:${PORT}`);
     });
   })
